@@ -61,3 +61,5 @@ typings/
 /.hubot_history
 # run.bat
 run.bat
+package.json
+package-lock.json
