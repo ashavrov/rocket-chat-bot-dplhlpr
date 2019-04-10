@@ -11,7 +11,13 @@
 			var msgTextArr = msgText.split("\n");
 			var jira = msgTextArr[0].replace(/--obj (.*\/){0,1}/g, '');
       var project = msgTextArr[1];
-			//
+      //Проверки шапки
+      if(jira == ""){
+        throw("Некорректный номер Jira!");
+      }
+      if(project == ""){
+        throw("Некорректное название проекта!");
+      }
 			var msqSqlText = 'INSERT INTO messages(id, user, text, project, jira) VALUES (?,?,?,?,?)';
 			var objSqlText = 'INSERT INTO objects(id, parentId, type, name) VALUES (?,?,?,?)';
 			//вставляем запись с сообщением
@@ -24,12 +30,25 @@
         var objNameArr;
         //Вставляем записи с объектами сообщения
   			for(var i = 2; i< msgTextArr.length; i++){
+            //пропускаем пустые строки
+            if(msgTextArr[i].length == 0){
+              continue;
+            }
             //парсим данные по объекту
             objType = msgTextArr[i].replace(/\:.*$/g, "");
+            if(!validateObjType(objType.trim()))
+            {
+              throw("Некорректный тип в строке: \r\n"+msgTextArr[i]);
+            }
             //в названии может быть передан массив через запятую
             objNameArr = msgTextArr[i].replace(/^.*?\:/g, "").split(",");
             for(var j = 0; j<objNameArr.length; j++){
-              let objSqlBinds = [uuidv4(), msgId, objType, objNameArr[j].trim()]
+              //проверка на корректность заполнения объекта
+              if(!validateObjName(objNameArr[j].trim()))
+              {
+                throw("Некорректное название объекта в строке: \r\n"+msgTextArr[i]);
+              }
+              let objSqlBinds = [uuidv4(), msgId, objType.trim(), objNameArr[j].trim()]
               stmt = db.prepare(objSqlText);
               stmt.run(objSqlBinds);
             }
@@ -38,11 +57,25 @@
       });
 			db.close();
       //в конце ответ
-			res.reply("done");
+			res.reply("\r\n done");
 		} catch (e) {
-				res.reply(e.toString());
+				res.reply("\r\n"+e.toString());
 		} finally {
 
 		}
 	})
+}
+function validateObjName(name){
+  /*
+  Функция проверки названия объекта
+  IN name - название объекта
+  */
+  return name != "";
+}
+function validateObjType(name){
+  /*
+  Функция проверки типа объекта
+  IN name - название типа
+  */
+  return name != "";
 }
