@@ -3,7 +3,8 @@
 		try {
 			var sqlite3 = require('sqlite3').verbose();
 			var uuidv4 = require('uuid/v4');
-			var db = new sqlite3.Database('//192.168.61.78/d$/DeployDb/msg.db3');
+      require('dotenv').config()
+			var db = new sqlite3.Database(process.env.DB_FILE);
 			//
 			var msgText = res.message.text;
 			var userName = res.envelope.user.name;
@@ -22,6 +23,7 @@
 			var objSqlText = 'INSERT INTO objects(id, parentId, type, name) VALUES (?,?,?,?)';
 			//вставляем запись с сообщением
       db.serialize(function() {
+        db.exec("BEGIN");
         var stmt = db.prepare(msqSqlText);
   			let msgSqlBinds = [msgId, userName, msgText, project, jira]
   		  stmt.run(msgSqlBinds);
@@ -54,12 +56,14 @@
             }
   			}
         stmt.finalize();
+        db.exec("COMMIT");
       });
 			db.close();
       //в конце ответ
 			res.reply("\r\n done");
 		} catch (e) {
 				res.reply("\r\n"+e.toString());
+        db.exec("ROLLBACK");
 		} finally {
 
 		}
