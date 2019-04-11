@@ -1,9 +1,10 @@
-﻿module.exports = (robot) => {
+module.exports = (robot) => {
   robot.hear(/(^--obj.*)/gi, function(res){
 		try {
 			var sqlite3 = require('sqlite3').verbose();
 			var uuidv4 = require('uuid/v4');
-			var db = new sqlite3.Database('//192.168.61.78/d$/DeployDb/msg.db3');
+      require('dotenv').config()
+			var db = new sqlite3.Database(process.env.DB_FILE);
 			//
 			var msgText = res.message.text;
 			var userName = res.envelope.user.name;
