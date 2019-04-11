@@ -1,7 +1,7 @@
-﻿module.exports = (robot) => {
+module.exports = (robot) => {
   robot.hear(/^--help$/gi, function(res) {
-      res.send(
-`*Правила заполнения объектов:*
+    res.send(
+      `*Правила заполнения объектов:*
 Сообщение должно начинаться c _--obj {тикет Jira|ссылка на тикет}_
 Вторая строка - название проекта, для сборки, например название релиза или специфическая метка(18Q4, e2e и т.д.)
 (Название проектов можно получить по команде _--projects_)
@@ -15,6 +15,6 @@ BC:Contact
 Applet:Contact Assoc Applet,Contact Attachment Applet
 \`\`\`
 `
-      )
+    )
   })
 }

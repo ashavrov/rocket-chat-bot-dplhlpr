@@ -1,9 +1,9 @@
-﻿module.exports = (robot) => {
+module.exports = (robot) => {
   robot.hear(/^--projects$/gi, function(res) {
-      res.send(
-       `Список актуальных проектов:
-        1) e2e
-	2) 19Q2`
-      )
+    res.send(
+      `Список актуальных проектов:
+      1) e2e
+	    2) 19Q2`
+    )
   })
 }
