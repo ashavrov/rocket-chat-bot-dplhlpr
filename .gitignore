@@ -63,3 +63,5 @@ typings/
 run.bat
 package.json
 package-lock.json
+
+msg\.db3
