@@ -1,17 +1,21 @@
 module.exports = (robot) => {
   robot.hear(/(^--obj.*)/gi, function(res) {
     try {
+      //require
       var sqlite3 = require('sqlite3').verbose();
       var uuidv4 = require('uuid/v4');
       require('dotenv').config()
-      var db = new sqlite3.Database(process.env.DB_FILE);
-      //
+      //init
       var msgText = res.message.text;
       var userName = res.envelope.user.name;
+      var db = new sqlite3.Database(process.env.DB_FILE);
       var msgId = uuidv4();
       var msgTextArr = msgText.split("\n");
       var jira = msgTextArr[0].replace(/--obj (.*\/){0,1}/g, '');
       var project = msgTextArr[1];
+      var msqSqlText = 'INSERT INTO messages(id, user, text, project, jira) VALUES (?,?,?,?,?)';
+      var objSqlText = 'INSERT INTO objects(id, parentId, type, name) VALUES (?,?,?,?)';
+      //
       //Проверки шапки
       if (jira == "") {
         throw ("Некорректный номер Jira!");
@@ -19,8 +23,7 @@ module.exports = (robot) => {
       if (project == "") {
         throw ("Некорректное название проекта!");
       }
-      var msqSqlText = 'INSERT INTO messages(id, user, text, project, jira) VALUES (?,?,?,?,?)';
-      var objSqlText = 'INSERT INTO objects(id, parentId, type, name) VALUES (?,?,?,?)';
+
       //вставляем запись с сообщением
       db.serialize(function() {
         db.exec("BEGIN");
