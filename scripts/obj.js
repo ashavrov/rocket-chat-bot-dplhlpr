@@ -14,7 +14,7 @@ module.exports = (robot) => {
       var jira = msgTextArr[0].replace(/--obj (.*\/){0,1}/g, '');
       var project = msgTextArr[1];
       var msqSqlText = 'INSERT INTO messages(id, user, text, project, jira) VALUES (?,?,?,?,?)';
-      var objSqlText = 'INSERT INTO objects(id, parentId, type, name) VALUES (?,?,?,?)';
+      var objSqlText = 'INSERT INTO objects(id, parentId, type, name, adm_flg) VALUES (?,?,?,?,?)';
       //
       //Проверки шапки
       if (jira == "") {
@@ -23,7 +23,6 @@ module.exports = (robot) => {
       if (project == "") {
         throw ("Некорректное название проекта!");
       }
-
       //вставляем запись с сообщением
       db.serialize(function() {
         db.exec("BEGIN");
@@ -51,7 +50,7 @@ module.exports = (robot) => {
             if (!validateObjName(objNameArr[j].trim())) {
               throw ("Некорректное название объекта в строке: \r\n" + msgTextArr[i]);
             }
-            let objSqlBinds = [uuidv4(), msgId, objType.trim(), objNameArr[j].trim()]
+            let objSqlBinds = [uuidv4(), msgId, objType.trim(), objNameArr[j].trim(), "N"]
             stmt = db.prepare(objSqlText);
             stmt.run(objSqlBinds);
           }
