@@ -50,7 +50,13 @@ module.exports = (robot) => {
             if (!validateObjName(objNameArr[j].trim())) {
               throw ("Некорректное название объекта в строке: \r\n" + msgTextArr[i]);
             }
-            let objSqlBinds = [uuidv4(), msgId, objType.trim(), objNameArr[j].trim(), "N"]
+            let objSqlBinds = [
+              uuidv4(),
+              msgId,
+              objType.trim().replace(/\*/g, ""),
+              objNameArr[j].trim().replace(/\*/g, ""),
+              "N"
+            ]
             stmt = db.prepare(objSqlText);
             stmt.run(objSqlBinds);
           }
