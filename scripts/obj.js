@@ -1,10 +1,11 @@
+//require
+var sqlite3 = require('sqlite3').verbose();
+var uuidv4 = require('uuid/v4');
+require('dotenv').config();
+
 module.exports = (robot) => {
   robot.hear(/(^--obj.*)/gi, function(res) {
     try {
-      //require
-      var sqlite3 = require('sqlite3').verbose();
-      var uuidv4 = require('uuid/v4');
-      require('dotenv').config()
       //init
       var msgText = res.message.text;
       var userName = res.envelope.user.name;

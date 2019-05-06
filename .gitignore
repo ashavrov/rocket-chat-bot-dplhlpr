@@ -63,3 +63,5 @@ typings/
 run.bat
 
 msg\.db3
+credentials.json
+token.json
