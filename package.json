@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "coffeescript": "^2.2.2",
+    "googleapis": "^27.0.0",
     "hubot": "3",
     "hubot-rocketchat": "rocketchat/hubot-rocketchat",
     "sqlite3": "^4.0.6"
