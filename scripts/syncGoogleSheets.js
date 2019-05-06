@@ -110,7 +110,7 @@ function appendData(auth) {
     //каждый объект апендим в гугл табличку
     for (var i = 0; i < rows.length; i++) {
       let val = {
-        spreadsheetId: "1mOO-P191yJRdEZ49bTUU8DDWpxGOuTHs57DVjfs-_eE", //Id таблицы
+        spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID, //Id таблицы
         range: 'Sheet1', //диапазон, в данном случае лист
         valueInputOption: 'RAW',
         insertDataOption: 'INSERT_ROWS',
