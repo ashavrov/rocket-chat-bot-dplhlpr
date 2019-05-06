@@ -98,6 +98,7 @@ function appendData(auth) {
      WHERE m.created > (SELECT value
                           FROM settings s
                          WHERE s.name = 'lastSyncDate')
+    ORDER BY m.created ASC;
                  `;
   //извлекаем объекты
   let db = new sqlite3.Database(process.env.DB_FILE);
