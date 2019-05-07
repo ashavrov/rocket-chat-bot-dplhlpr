@@ -4,3 +4,4 @@
 - scripts\help.js - правила
 - scripts\obj.js - команда для сборки объектов
 - scripts\projects.js - актуальные проекты
+- scripts\syncGoogleSheets.js - синхронизация изменений с Google Sheets
