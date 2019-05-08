@@ -1,0 +1,1 @@
+INSERT INTO settings(name, value) VALUES ('lastSyncDate', '2019-04-01 00:00:00');
