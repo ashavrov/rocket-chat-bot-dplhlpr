@@ -1,0 +1,1 @@
+CREATE TABLE objects (id text, parentId text,  "type" text, name text, ADM_FLG);
