@@ -129,9 +129,9 @@ function appendData(auth) {
       },
       auth: auth
     };
-    setTimeout(() => sheets.spreadsheets.values.append(val, (err, response) => {
+    sheets.spreadsheets.values.append(val, (err, response) => {
       if (err) return console.error(err);
-    }), 100);
+    });
     //если записи были, то апдейтим lastSyncDate на дату
     //создания последнего объекта
     if (rows && rows.length > 0) {
