@@ -6,12 +6,16 @@ const {
 } = require('googleapis');
 var sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
+//Локальные модули
+var validateProject = require('../scripts/func/validateProject.js');
 
 module.exports = (robot) => {
   robot.hear(/(^--syncGoogleSheet.*)|((^--syncGS.*))/gi, function(res) {
     try {
       var msgText = res.message.text;
       global.projectName = msgText.replace(/(^--syncGoogleSheet)|((^--syncGS))/gi, '');
+      //проверка навания проекта
+      validateProject(global.projectName);
       //Попытка получить данные для авторизации из локального файла
       fs.readFile('credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
@@ -100,7 +104,7 @@ function appendData(auth) {
      WHERE m.created > (SELECT value
                           FROM settings s
                          WHERE s.name = 'lastSyncDate')
-      AND m.project = '`+global.projectName.trim()+`'
+      AND m.project = '` + global.projectName.trim() + `'
     ORDER BY m.created ASC;
                  `;
   //извлекаем объекты
