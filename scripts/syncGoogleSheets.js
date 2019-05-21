@@ -8,8 +8,10 @@ var sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
 module.exports = (robot) => {
-  robot.hear(/(^--syncGoogleSheet.*)/gi, function(res) {
+  robot.hear(/(^--syncGoogleSheet.*)|((^--syncGS.*))/gi, function(res) {
     try {
+      var msgText = res.message.text;
+      global.projectName = msgText.replace(/(^--syncGoogleSheet)|((^--syncGS))/gi, '');
       //Попытка получить данные для авторизации из локального файла
       fs.readFile('credentials.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
@@ -98,6 +100,7 @@ function appendData(auth) {
      WHERE m.created > (SELECT value
                           FROM settings s
                          WHERE s.name = 'lastSyncDate')
+      AND m.project = '`+global.projectName.trim()+`'
     ORDER BY m.created ASC;
                  `;
   //извлекаем объекты
@@ -106,31 +109,32 @@ function appendData(auth) {
     if (err) {
       throw err;
     }
-    created = "";
+    var created = "";
+    var valArray = [];
     //каждый объект апендим в гугл табличку
     for (var i = 0; i < rows.length; i++) {
-      let val = {
-        spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID, //Id таблицы
-        range: 'Sheet1', //диапазон, в данном случае лист
-        valueInputOption: 'RAW',
-        insertDataOption: 'INSERT_ROWS',
-        resource: {
-          values: [
-            [
-              rows[i].status,
-              rows[i].type,
-              rows[i].name,
-              rows[i].jira,
-              rows[i].user
-            ]
-          ],
-        },
-        auth: auth
-      };
-      setTimeout(() => sheets.spreadsheets.values.append(val, (err, response) => {
-        if (err) return console.error(err);
-      }), 100*i);
+      valArray.push([
+        rows[i].status,
+        rows[i].type,
+        rows[i].name,
+        rows[i].jira,
+        rows[i].user
+      ]);
+
     }
+    let val = {
+      spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID, //Id таблицы
+      range: 'Sheet1', //диапазон, в данном случае лист
+      valueInputOption: 'RAW',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+        values: valArray,
+      },
+      auth: auth
+    };
+    sheets.spreadsheets.values.append(val, (err, response) => {
+      if (err) return console.error(err);
+    });
     //если записи были, то апдейтим lastSyncDate на дату
     //создания последнего объекта
     if (rows && rows.length > 0) {
