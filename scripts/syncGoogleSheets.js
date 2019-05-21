@@ -106,31 +106,32 @@ function appendData(auth) {
     if (err) {
       throw err;
     }
-    created = "";
+    var created = "";
+    var valArray = [];
     //каждый объект апендим в гугл табличку
     for (var i = 0; i < rows.length; i++) {
-      let val = {
-        spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID, //Id таблицы
-        range: 'Sheet1', //диапазон, в данном случае лист
-        valueInputOption: 'RAW',
-        insertDataOption: 'INSERT_ROWS',
-        resource: {
-          values: [
-            [
-              rows[i].status,
-              rows[i].type,
-              rows[i].name,
-              rows[i].jira,
-              rows[i].user
-            ]
-          ],
-        },
-        auth: auth
-      };
-      setTimeout(() => sheets.spreadsheets.values.append(val, (err, response) => {
-        if (err) return console.error(err);
-      }), 100*i);
+      valArray.push([
+        rows[i].status,
+        rows[i].type,
+        rows[i].name,
+        rows[i].jira,
+        rows[i].user
+      ]);
+
     }
+    let val = {
+      spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID, //Id таблицы
+      range: 'Sheet1', //диапазон, в данном случае лист
+      valueInputOption: 'RAW',
+      insertDataOption: 'INSERT_ROWS',
+      resource: {
+        values: valArray,
+      },
+      auth: auth
+    };
+    setTimeout(() => sheets.spreadsheets.values.append(val, (err, response) => {
+      if (err) return console.error(err);
+    }), 100);
     //если записи были, то апдейтим lastSyncDate на дату
     //создания последнего объекта
     if (rows && rows.length > 0) {
