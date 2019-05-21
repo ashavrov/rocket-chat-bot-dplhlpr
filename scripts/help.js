@@ -1,20 +1,13 @@
+//модули
+const fs = require('fs');
+
 module.exports = (robot) => {
   robot.hear(/^--help$/gi, function(res) {
-    res.send(
-      `*Правила заполнения объектов:*
-Сообщение должно начинаться c _--obj {тикет Jira|ссылка на тикет}_
-Вторая строка - название проекта, для сборки, например название релиза или специфическая метка(18Q4, e2e и т.д.)
-(Название проектов можно получить по команде _--projects_)
-Объекты передаются в формате _{Тип объекта}:{Название 1},{Название 2} .. {Название N}_
-При корректном завершении операции бот отвечает *done*
-*Пример:*
-\`\`\`
---obj ATC-1234
-18Q4
-BC:Contact
-Applet:Contact Assoc Applet,Contact Attachment Applet
-\`\`\`
-`
-    )
+    fs.readFile('scripts/files/help.txt', 'utf8', (err, content) => {
+      if (err) {
+        content = "Не удалось загрузить help.txt"
+      }
+      res.send(content);
+    });
   })
 }
