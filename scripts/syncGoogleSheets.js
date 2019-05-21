@@ -8,7 +8,7 @@ var sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 
 module.exports = (robot) => {
-  robot.hear(/(^--syncGoogleSheet.*)/gi, function(res) {
+  robot.hear(/(^--syncGoogleSheet.*)|((^--syncGS.*))/gi, function(res) {
     try {
       //Попытка получить данные для авторизации из локального файла
       fs.readFile('credentials.json', (err, content) => {
