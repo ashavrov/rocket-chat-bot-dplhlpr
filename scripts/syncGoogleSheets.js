@@ -31,11 +31,12 @@ module.exports = (robot) => {
     }
   });
 }
-/*
-Функция авторизации
-credentials - файл с данными для авторизации
-callback - что вызвать после
-*/
+/**
+ * authorize - Функция авторизации
+ *
+ * @param  credentials файл с данными для авторизации
+ * @param  callback    что вызвать после
+ */
 function authorize(credentials, callback) {
   const {
     client_secret,
@@ -53,11 +54,12 @@ function authorize(credentials, callback) {
     callback(oAuth2Client);
   });
 }
-/*
-Функция получения токена
-oAuth2Client - google.auth.OAuth2
-callback - что вызвать после
-*/
+/**
+ * getNewToken - Функция получения токена
+ *
+ * @param oAuth2Client google.auth.OAuth2
+ * @param callback     что вызвать после
+ */
 function getNewToken(oAuth2Client, callback) {
   //генерируем url для авторизации
   const authUrl = oAuth2Client.generateAuthUrl({
@@ -84,10 +86,11 @@ function getNewToken(oAuth2Client, callback) {
     });
   });
 }
-/*
-Функция синхронизации данных
-auth -аутентификационные данные google.auth.OAuth2
-*/
+/**
+ * appendData - Функция синхронизации данных
+ *
+ * @param auth аутентификационные данные google.auth.OAuth2
+ */
 function appendData(auth) {
   const sheets = google.sheets({
     version: 'v4',
