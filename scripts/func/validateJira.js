@@ -1,7 +1,7 @@
-/*
-Функция проверки названия jira
-IN name - название объекта
-*/
+/**
+ * Функция проверки названия jira
+ * @param name тикет jira
+ */
 module.exports = (name) => {
   if (name == "") {
     throw ("Нужно ввести тикет Jira!");

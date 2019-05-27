@@ -23,13 +23,17 @@
     "local": "node -r dotenv/config node_modules/hubot/bin/hubot.js -a rocketchat"
   },
   "dependencies": {
+    "chai": "^4.2.0",
     "coffeescript": "^2.2.2",
     "googleapis": "^27.0.0",
     "hubot": "3",
     "hubot-rocketchat": "rocketchat/hubot-rocketchat",
+    "semaphore": "^1.1.0",
     "sqlite3": "^4.0.6"
   },
   "devDependencies": {
-    "dotenv": "^5.0.1"
+    "dotenv": "^5.0.1",
+    "hubot-test-helper": "^1.9.0",
+    "mocha-reporter-remote": "^1.7.1"
   }
 }
