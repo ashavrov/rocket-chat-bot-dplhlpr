@@ -19,8 +19,8 @@ module.exports = (robot) => {
         var db = new sqlite3.Database(process.env.DB_FILE);
         var msgId = uuidv4();
         var msgTextArr = msgText.split("\n");
-        var jira = msgTextArr[0].replace(/--obj(.*\/){0,1}/g, '');
-        var project = (msgTextArr[1] == undefined) ? "" : msgTextArr[1];
+        var jira = msgTextArr[0].replace(/--obj(.*\/){0,1}/g, '').replace(/\r/g, '');
+        var project = ((msgTextArr[1] == undefined) ? "" : msgTextArr[1]);
         var msqSqlText = `INSERT INTO messages(id, user, text, project, jira)
                           VALUES (?,?,?,?,?);`;
         var objSqlText = `INSERT INTO objects(id, parentId, type, name, adm_flg)
