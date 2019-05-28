@@ -61,6 +61,7 @@ typings/
 /.hubot_history
 # run.bat
 run.bat
+test.bat
 
 msg\.db3
 credentials.json
