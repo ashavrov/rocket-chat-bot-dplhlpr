@@ -131,7 +131,7 @@ function appendData(auth) {
     }
     let val = {
       spreadsheetId: process.env.GOOGLE_SPREADSHEET_ID, //Id таблицы
-      range: 'Sheet1', //диапазон, в данном случае лист
+      range: global.projectName.trim(), //диапазон, в данном случае лист
       valueInputOption: 'RAW',
       insertDataOption: 'INSERT_ROWS',
       resource: {
