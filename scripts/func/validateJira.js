@@ -3,7 +3,7 @@
  * @param name тикет jira
  */
 module.exports = (name) => {
-  if (name == "") {
-    throw ("Нужно ввести тикет Jira!");
-  }
+    if (name === "") {
+        throw ("Нужно ввести тикет Jira!");
+    }
 }

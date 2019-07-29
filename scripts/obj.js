@@ -1,13 +1,13 @@
 //Модули
-var sqlite3 = require('sqlite3').verbose();
-var uuidv4 = require('uuid/v4');
-require('dotenv').config();
-var sem = require('semaphore')(1);
+var sqlite3 = require("sqlite3").verbose();
+var uuidv4 = require("uuid/v4");
+require("dotenv").config();
+var sem = require("semaphore")(1);
 //Локальные модули
-var validateProject = require('../scripts/func/validateProject.js');
-var validateJira = require('../scripts/func/validateJira.js');
-var validateObjectName = require('../scripts/func/validateObjectName.js');
-var validateObjectType = require('../scripts/func/validateObjectType.js');
+var validateProject = require("../scripts/func/validateProject.js");
+var validateJira = require("../scripts/func/validateJira.js");
+var validateObjectName = require("../scripts/func/validateObjectName.js");
+var validateObjectType = require("../scripts/func/validateObjectType.js");
 
 module.exports = (robot) => {
     robot.hear(/(^--obj.*)/gi, function(res) {
@@ -19,7 +19,7 @@ module.exports = (robot) => {
                 var db = new sqlite3.Database(process.env.DB_FILE);
                 var msgId = uuidv4();
                 var msgTextArr = msgText.split("\n");
-                var jira = msgTextArr[0].replace(/--obj(.*\/){0,1}/g, '').replace(/\r/g, '').trim();
+                var jira = msgTextArr[0].replace(/--obj(.*\/){0,1}/g, "").replace(/\r/g, "").trim();
                 var project = ((msgTextArr[1] == undefined) ? "" : msgTextArr[1]);
                 var msqSqlText = `INSERT INTO messages(id, user, text, project, jira)
                           VALUES (?,?,?,?,?);`;
@@ -80,7 +80,7 @@ module.exports = (robot) => {
                         }
                     }
                     let stmtMsg = db.prepare(msqSqlText);
-                    let msgSqlBinds = [msgId, userName, msgText, project, jira]
+                    let msgSqlBinds = [msgId, userName, msgText, project, jira];
                     db.serialize(function() {
                         stmtMsg.run(msgSqlBinds);
                         stmtMsg.finalize();
