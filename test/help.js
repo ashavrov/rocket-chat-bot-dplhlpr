@@ -1,6 +1,6 @@
 const Helper = require("hubot-test-helper");
 const helper = new Helper("../scripts");
-const Promise = require("bluebird")
+const Promise = require("bluebird");
 const fs = require("fs");
 
 const co = require("co");

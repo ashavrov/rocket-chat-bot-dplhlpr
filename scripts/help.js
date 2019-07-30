@@ -9,5 +9,5 @@ module.exports = (robot) => {
             }
             res.send(content);
         });
-    })
+    });
 };

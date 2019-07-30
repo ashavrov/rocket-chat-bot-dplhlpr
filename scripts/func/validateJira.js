@@ -6,4 +6,4 @@ module.exports = (name) => {
     if (name === "") {
         throw ("Нужно ввести тикет Jira!");
     }
-}
+};

@@ -8,52 +8,7 @@ var sqlite3 = require("sqlite3").verbose();
 require("dotenv").config();
 //Локальные модули
 var validateProject = require("../scripts/func/validateProject.js");
-
-module.exports = (robot) => {
-    robot.hear(/(^--syncGoogleSheet.*)|((^--syncGS.*))/gi, function(res) {
-        try {
-            var msgText = res.message.text;
-            global.projectName = msgText.replace(/(^--syncGoogleSheet)|((^--syncGS))/gi, "");
-            //проверка навания проекта
-            validateProject(global.projectName);
-            //Попытка получить данные для авторизации из локального файла
-            fs.readFile("credentials.json", (err, content) => {
-                if (err) return console.log("Error loading client secret file:", err);
-                //Авторизация и после авторизации запуск функции добавления
-                //записей в гугл таблицу
-                authorize(JSON.parse(content), appendData);
-                res.reply("\r\n done");
-            });
-        } catch (e) {
-            res.reply("\r\n" + e.toString());
-        } finally {
-
-        }
-    });
-};
-/**
- * authorize - Функция авторизации
- *
- * @param  credentials файл с данными для авторизации
- * @param  callback    что вызвать после
- */
-function authorize(credentials, callback) {
-    const {
-        client_secret,
-        client_id,
-        redirect_uris
-    } = credentials.installed;
-    const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]);
-    // проверяем наличие токена авторизации
-    fs.readFile("token.json", (err, token) => {
-        //если не смогли считать токен, запрашиваем новый
-        if (err) return getNewToken(oAuth2Client, callback);
-        //создаем авторизационные данные и вызываем функцию
-        oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client);
-    });
-}
+//Локальные функции
 /**
  * getNewToken - Функция получения токена
  *
@@ -66,7 +21,6 @@ function getNewToken(oAuth2Client, callback) {
         access_type: "offline",
         scope: "https://www.googleapis.com/auth/spreadsheets",
     });
-    console.log("Authorize this app by visiting this url:", authUrl);
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -75,15 +29,43 @@ function getNewToken(oAuth2Client, callback) {
         rl.close();
         //берем токен
         oAuth2Client.getToken(code, (err, token) => {
-            if (err) return console.error("Error while trying to retrieve access token", err);
+            if (err) {
+                return err;
+            }
             oAuth2Client.setCredentials(token);
             //сохраняем токен на диск
             fs.writeFile("token.json", JSON.stringify(token), (err) => {
-                if (err) return console.error(err);
-                console.log("Token stored to", "token.json");
+                if (err) {
+                    return err;
+                }
             });
             callback(oAuth2Client);
         });
+    });
+}
+/**
+ * authorize - Функция авторизации
+ *
+ * @param  credentials файл с данными для авторизации
+ * @param  callback    что вызвать после
+ */
+function authorize(credentials, callback) {
+    const {
+        clientSecret,
+        clientId,
+        redirectUris
+    } = credentials.installed;
+    const oAuth2Client = new google.auth.OAuth2(
+        clientId, clientSecret, redirectUris[0]);
+    // проверяем наличие токена авторизации
+    fs.readFile("token.json", (err, token) => {
+        //если не смогли считать токен, запрашиваем новый
+        if (err) {
+            return getNewToken(oAuth2Client, callback);
+        }
+        //создаем авторизационные данные и вызываем функцию
+        oAuth2Client.setCredentials(JSON.parse(token));
+        callback(oAuth2Client);
     });
 }
 /**
@@ -140,7 +122,9 @@ function appendData(auth) {
             auth: auth
         };
         sheets.spreadsheets.values.append(val, (err, response) => {
-            if (err) return console.error(err);
+            if (err) {
+                return err;
+            }
         });
         //если записи были, то апдейтим lastSyncDate на дату
         //создания последнего объекта
@@ -155,3 +139,25 @@ function appendData(auth) {
         }
     });
 }
+module.exports = (robot) => {
+    robot.hear(/(^--syncGoogleSheet.*)|((^--syncGS.*))/gi, function(res) {
+        try {
+            var msgText = res.message.text;
+            global.projectName = msgText.replace(/(^--syncGoogleSheet)|((^--syncGS))/gi, "");
+            //проверка навания проекта
+            validateProject(global.projectName);
+            //Попытка получить данные для авторизации из локального файла
+            fs.readFile("credentials.json", (err, content) => {
+                if (err) {
+                    return err;
+                }
+                //Авторизация и после авторизации запуск функции добавления
+                //записей в гугл таблицу
+                authorize(JSON.parse(content), appendData);
+                res.reply("\r\n done");
+            });
+        } catch (e) {
+            res.reply("\r\n" + e.toString());
+        }
+    });
+};
