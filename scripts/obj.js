@@ -1,14 +1,35 @@
 //Модули
-var sqlite3 = require('sqlite3').verbose();
-var uuidv4 = require('uuid/v4');
-require('dotenv').config();
-var sem = require('semaphore')(1);
+var sqlite3 = require("sqlite3").verbose();
+var uuidv4 = require("uuid/v4");
+require("dotenv").config();
+var sem = require("semaphore")(1);
 //Локальные модули
-var validateProject = require('../scripts/func/validateProject.js');
-var validateJira = require('../scripts/func/validateJira.js');
-var validateObjectName = require('../scripts/func/validateObjectName.js');
-var validateObjectType = require('../scripts/func/validateObjectType.js');
-
+var validateProject = require("../scripts/func/validateProject.js");
+var validateJira = require("../scripts/func/validateJira.js");
+var validateObjectName = require("../scripts/func/validateObjectName.js");
+var validateObjectType = require("../scripts/func/validateObjectType.js");
+//Локальные функции
+/**
+ * rollback - Функция отката объектов
+ *
+ * @param msgId Id сообщения
+ */
+function rollback(msgId) {
+    //Откат происходит после выполнения в отдельном инсте,что бы избежать гонки
+    setTimeout(function() {
+        sem.take(function() {
+            var db = new sqlite3.Database(process.env.DB_FILE);
+            var rlbckSqlText = "DELETE FROM objects WHERE parentId='" + msgId + "'";
+            let stmtRlbck = db.prepare(rlbckSqlText);
+            let rlbckSqlBinds = [msgId];
+            db.serialize(function() {
+                stmtRlbck.run();
+                stmtRlbck.finalize();
+            });
+            sem.leave();
+        });
+    }, 5000);
+}
 module.exports = (robot) => {
     robot.hear(/(^--obj.*)/gi, function(res) {
         //init
@@ -19,8 +40,8 @@ module.exports = (robot) => {
                 var db = new sqlite3.Database(process.env.DB_FILE);
                 var msgId = uuidv4();
                 var msgTextArr = msgText.split("\n");
-                var jira = msgTextArr[0].replace(/--obj(.*\/){0,1}/g, '').replace(/\r/g, '').trim();
-                var project = ((msgTextArr[1] == undefined) ? "" : msgTextArr[1]);
+                var jira = msgTextArr[0].replace(/--obj(.*\/){0,1}/g, "").replace(/\r/g, "").trim();
+                var project = ((msgTextArr[1] === undefined) ? "" : msgTextArr[1]);
                 var msqSqlText = `INSERT INTO messages(id, user, text, project, jira)
                           VALUES (?,?,?,?,?);`;
                 var objSqlText = `INSERT INTO objects(id, parentId, type, name, adm_flg)
@@ -31,7 +52,7 @@ module.exports = (robot) => {
                     validateProject(project);
                 } catch (e) {
                     res.reply("\r\n" + e.toString());
-                    return
+                    return;
                 }
                 //
                 //вставляем запись с сообщением
@@ -43,7 +64,7 @@ module.exports = (robot) => {
                     for (var i = 2; i < msgTextArr.length; i++) {
                         try {
                             //пропускаем пустые строки
-                            if (msgTextArr[i].length == 0) {
+                            if (msgTextArr[i].length === 0) {
                                 continue;
                             }
                             //парсим данные по объекту
@@ -67,7 +88,7 @@ module.exports = (robot) => {
                                     objType,
                                     objName,
                                     "N"
-                                ]
+                                ];
                                 let stmtObj = db.prepare(objSqlText);
                                 db.serialize(function() {
                                     stmtObj.run(objSqlBinds);
@@ -76,11 +97,11 @@ module.exports = (robot) => {
 
                             }
                         } catch (e) {
-                            throw (e.toString() + "\r\n" + "в строке: \r\n" + msgTextArr[i])
+                            throw (e.toString() + "\r\n" + "в строке: \r\n" + msgTextArr[i]);
                         }
                     }
                     let stmtMsg = db.prepare(msqSqlText);
-                    let msgSqlBinds = [msgId, userName, msgText, project, jira]
+                    let msgSqlBinds = [msgId, userName, msgText, project, jira];
                     db.serialize(function() {
                         stmtMsg.run(msgSqlBinds);
                         stmtMsg.finalize();
@@ -93,32 +114,10 @@ module.exports = (robot) => {
                 }
                 db.close();
             } catch (e) {
-                console.log(e);
+                res.reply("\r\n" + e.toString());
             } finally {
                 sem.leave();
             }
         });
-    })
-}
-
-/**
- * rollback - Функция отката объектов
- *
- * @param msgId Id сообщения
- */
-function rollback(msgId) {
-    //Откат происходит после выполнения в отдельном инсте,что бы избежать гонки
-    setTimeout(function() {
-        sem.take(function() {
-            var db = new sqlite3.Database(process.env.DB_FILE);
-            var rlbckSqlText = `DELETE FROM objects WHERE parentId='` + msgId + `'`;
-            let stmtRlbck = db.prepare(rlbckSqlText);
-            let rlbckSqlBinds = [msgId]
-            db.serialize(function() {
-                stmtRlbck.run();
-                stmtRlbck.finalize();
-            });
-            sem.leave();
-        });
-    }, 5000);
-}
+    });
+};
