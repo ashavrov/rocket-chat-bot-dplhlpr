@@ -51,12 +51,12 @@ function getNewToken(oAuth2Client, callback) {
  */
 function authorize(credentials, callback) {
     const {
-        clientSecret,
-        clientId,
-        redirectUris
+        client_secret,
+        client_id,
+        redirect_uris
     } = credentials.installed;
     const oAuth2Client = new google.auth.OAuth2(
-        clientId, clientSecret, redirectUris[0]);
+        client_id, client_secret, redirect_uris[0]);
     // проверяем наличие токена авторизации
     fs.readFile("token.json", (err, token) => {
         //если не смогли считать токен, запрашиваем новый
