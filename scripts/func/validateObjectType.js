@@ -6,4 +6,4 @@ module.exports = (type) => {
     if (type === "") {
         throw ("Нужно ввести тип объекта!");
     }
-}
+};

@@ -1,6 +1,6 @@
 //Модули
-var sqlite3 = require('sqlite3').verbose();
-require('dotenv').config();
+var sqlite3 = require("sqlite3").verbose();
+require("dotenv").config();
 
 module.exports = (robot) => {
     robot.hear(/^--projects$/gi, function(res) {
@@ -18,5 +18,5 @@ module.exports = (robot) => {
             res.send(answer);
         });
         db.close();
-    })
+    });
 };
