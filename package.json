@@ -26,15 +26,11 @@
     "bluebird": "^3.5.5",
     "chai": "^4.2.0",
     "coffeescript": "^2.2.2",
-    "debug-mode": "^2.0.0",
     "googleapis": "^27.0.0",
     "hubot": "3",
     "hubot-rocketchat": "rocketchat/hubot-rocketchat",
-    "jenkins": "^0.27.0",
     "semaphore": "^1.1.0",
-    "sqlite3": "^4.0.6",
-    "xml-query": "^1.5.0",
-    "xml-reader": "^2.4.3"
+    "sqlite3": "^4.0.6"
   },
   "devDependencies": {
     "dotenv": "^5.0.1",
