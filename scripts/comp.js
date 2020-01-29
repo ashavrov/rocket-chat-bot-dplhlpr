@@ -23,7 +23,7 @@ module.exports = robot => {
     var msgText = res.message.text;
     var msgTextArr = msgText.split("\n");
     var userId = res.message.user.id;
-    //Get Nickname of clinet from Rocket chat
+    //Get Nickname of client from Rocket chat
     robot.adapter.api.get("users.info", { userId }).then(result => {
       if (result.success) {
         var userName = result.user.name;
@@ -71,18 +71,3 @@ module.exports = robot => {
     });
   });
 };
-// module.exports = robot => {
-//   robot.hear(/(^--comp.*)/gi, function(res) {
-//     new Promise((resolve, reject) => {
-//       jenkins.job.config("for-test/inc-compile-test", function(err, data) {
-//         // if (data) return reject("hi man");
-//         // if (data) return reject("hi man2");
-//         resolve("data", "df");
-//       });
-//     })
-//       .then((df, data) => {
-//         console.log(df, data);
-//       })
-//       .catch(err => res.reply(err));
-//   });
-// };
