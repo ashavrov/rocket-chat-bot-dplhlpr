@@ -23,6 +23,7 @@ module.exports = robot => {
     var msgText = res.message.text;
     var msgTextArr = msgText.split("\n");
     var userId = res.message.user.id;
+    var jobName = process.env.JENKINS_COMP_JOB;
     //Get Nickname of client from Rocket chat
     robot.adapter.api.get("users.info", { userId }).then(result => {
       if (result.success) {
@@ -50,12 +51,12 @@ module.exports = robot => {
                 validateObjectName(objName);
               }
               var dictParameters = { inputs: msgTextArr[i], name: userName };
-              buildingJob(jenkins,"for-test/inc-compile-test",dictParameters,
-                function(err) {
+              buildingJob(jenkins,jobName,dictParameters,
+                function(err,data) {
                   if (err) {
                     res.reply("\r\n*" + err + "*");
                   } else {
-                    res.reply("\r\ndone");
+                    res.reply("\r\n*"+data["inputs"]+"* начал компиляцию");
                   }
                 }
               );
