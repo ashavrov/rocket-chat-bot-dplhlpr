@@ -11,7 +11,6 @@ const XmlReader = require("xml-reader");
 
 module.exports = (jenkins, jobName, parametersObj, callback) => {
   new Promise((resolve, reject) => {
-    if (jenkins) {
       if (!jobName) {
         return reject("Enter job name");
       }
@@ -42,9 +41,6 @@ module.exports = (jenkins, jobName, parametersObj, callback) => {
         }
         resolve(data);
       });
-    } else {
-      return reject("Couldn't connect to the host");
-    }
   })
     .then(() => {
       jenkins.job.exists(jobName, function(err, data) {
