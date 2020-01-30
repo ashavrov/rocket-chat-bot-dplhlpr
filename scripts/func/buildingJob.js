@@ -61,9 +61,9 @@ module.exports = (jenkins, jobName, parametersObj, callback) => {
       return parametersObj;
     })
     .then(data => {
-      callback(null,data);
+      if(callback) callback(null,data);
     })
     .catch(err => {
-      callback(err);
+      if(callback) callback(err);
     });
 };
