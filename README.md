@@ -4,5 +4,6 @@
 ## Содержит скрипты расширения
 -   scripts\help.js- правила
 -   scripts\obj.js - команда для сборки объектов
+-   scripts\comp.js - компанда для компиляции объектов 
 -   scripts\projects.js - актуальные проекты
 -   scripts\syncGoogleSheets.js - синхронизация изменений с Google Sheets
