@@ -50,7 +50,7 @@ module.exports = robot => {
                 objName = objNameArr[j].trim().replace(/\*/g, "");
                 validateObjectName(objName);
               }
-              var dictParameters = { inputs: msgTextArr[i], name: userName };
+              var dictParameters = { inputs: msgTextArr[i].trim(), name: userName };
               buildingJob(jenkins,jobName,dictParameters,
                 function(err,data) {
                   if (err) {
