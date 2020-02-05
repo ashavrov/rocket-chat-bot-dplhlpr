@@ -59,11 +59,11 @@ module.exports = robot => {
                     res.reply("\r\n*" + err + "*");
                 }
                 if (data) {
-                  res.reply("\r\n*" + data[0]["inputs"] + "* начал компиляцию");
+                  res.reply("\r\n*" + data[0]["inputs"].replace(':',':*') + " *начал компиляцию*");
                   var idBuilder = data[1];
                   var inputParameter = data[0]["inputs"];
                   waitOnQueue(jenkins, idBuilder, (function(err, numBuilder) {
-                    if(err){res.reply("\r\n*"+inputParameter+"* compile failed Нарушилась очередь сборки. Повторите попытку. Если ошибка возобновиться, обратитесь к системному администратору");}
+                    if(err){res.reply("\r\n*"+inputParameter.replace(':',':*')+" *compile failed*. Нарушилась очередь сборки. Повторите попытку. Если ошибка возобновиться, обратитесь к системному администратору");}
                     replyReq(res, jenkins, jobName,numBuilder);
                   }).bind(inputParameter));
                 }
