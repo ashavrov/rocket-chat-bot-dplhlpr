@@ -4,6 +4,8 @@ require("dotenv").config();
 var buildingJob = require("../scripts/func/buildingJob.js");
 var validateObjectName = require("../scripts/func/validateObjectName.js");
 var validateObjectType = require("../scripts/func/validateObjectType.js");
+var waitOnQueue = require("../scripts/func/waitOnQueue.js");
+var replyReq = require("./func/replyReq.js");
 var jenkins = require("jenkins")({
   baseUrl:
     "http://" +
@@ -52,20 +54,26 @@ module.exports = robot => {
               }
               var dictParameters = { inputs: msgTextArr[i].trim(), name: userName };
               buildingJob(jenkins,jobName,dictParameters,
-                function(err,data) {
+                function(err, data) {
                   if (err) {
                     res.reply("\r\n*" + err + "*");
-                  } else {
-                    res.reply("\r\n*"+data["inputs"]+"* начал компиляцию");
-                  }
                 }
-              );
+                if (data) {
+                  res.reply("\r\n*" + data[0]["inputs"] + "* начал компиляцию");
+                  var idBuilder = data[1];
+                  var inputParameter = data[0]["inputs"];
+                  waitOnQueue(jenkins, idBuilder, (function(err, numBuilder) {
+                    if(err){res.reply("\r\n*"+inputParameter+"* compile failed Нарушилась очередь сборки. Повторите попытку. Если ошибка возобновиться, обратитесь к системному администратору");}
+                    replyReq(res, jenkins, jobName,numBuilder);
+                  }).bind(inputParameter));
+                }
+              });
             }
           } else {
             throw "Некорректный формат строки!";
           }
         } catch (e) {
-          res.reply("\r\n*" + e.toString() + "*");
+          res.reply("\r\n*" + e.toString() + ".* Повторите попытку. Если ошибка возобновиться, обратитесь к системному администратору");
           return;
         }
       }

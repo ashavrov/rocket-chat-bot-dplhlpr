@@ -45,25 +45,33 @@ module.exports = (jenkins, jobName, parametersObj, callback) => {
       jenkins.job.exists(jobName, function(err, data) {
         if (err) return reject(err);
         var existJob = data;
-        if(existJob){
-            if(parametersObj){
-                jenkins.job.build({ name: jobName, parameters: parametersObj }, function(err, data) {
-                    if (err) return reject(err);
-                });
-            }
-            else(
-               jenkins.job.build(jobName, function(err, data) {
-                    if (err) return reject(err);
-                })
-            )
-        }
+        if(!existJob){return reject(data)}
       });
       return parametersObj;
     })
-    .then(data => {
-      if(callback) callback(null,data);
-    })
-    .catch(err => {
-      if(callback) callback(err);
-    });
+  .then((parametersObj)=>{
+    if (parametersObj) {
+      return new Promise(function(resolve, reject) {
+        jenkins.job.build({ name: jobName, parameters: parametersObj }, function (err, data) {
+          if (err)
+           return reject(err);
+          return resolve([parametersObj, data]);
+        });
+      })
+    }
+    if(!parametersObj){
+      return new Promise(function(resolve, reject) {
+        jenkins.job.build(jobName, function (err, data) {
+          if (err)
+            return reject(err);
+          return resolve([null, data]);
+        });
+      })
+  }})
+  .then(data => {
+    if(callback) callback(null,data);
+  })
+  .catch(err => {
+    if(callback) callback(err);
+  });
 };
