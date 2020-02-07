@@ -14,9 +14,9 @@ module.exports = function replyReq(res, jenkins, jobName, numBuilder) {
         var inputParameter = data.actions[0].parameters[0].value;
         if (err) throw err;
         if (data.result === "SUCCESS") {
-          res.reply("\r\n*" + inputParameter.replace(':',':*') + " *скомпилилось успешно*");
+          res.reply("\r\n*" + inputParameter.replace(':','*:') + " *скомпилилось успешно*");
         } else {
-          res.reply("\r\n*" + inputParameter.replace(':',':*') + " *compile failed.*");
+          res.reply("\r\n*" + inputParameter.replace(':','*:') + " *compile failed.*");
         }
       });
     });
