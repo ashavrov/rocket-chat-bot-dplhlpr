@@ -32,7 +32,7 @@
     "hubot-rocketchat": "rocketchat/hubot-rocketchat",
     "jenkins": "^0.27.0",
     "semaphore": "^1.1.0",
-    "sqlite3": "^4.0.6",
+    "sqlite3": "^4.1.1",
     "xml-query": "^1.5.0",
     "xml-reader": "^2.4.3"
   },
