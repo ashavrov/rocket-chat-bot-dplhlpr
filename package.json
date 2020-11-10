@@ -27,7 +27,7 @@
     "chai": "^4.2.0",
     "coffeescript": "^2.2.2",
     "debug-mode": "^2.0.0",
-    "googleapis": "^27.0.0",
+    "googleapis": "^39.1.0",
     "hubot": "3",
     "hubot-rocketchat": "rocketchat/hubot-rocketchat",
     "jenkins": "^0.27.0",
