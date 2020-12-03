@@ -1,6 +1,6 @@
 //Модули
 var sqlite3 = require("sqlite3").verbose();
-var uuidv4 = require("uuid/v4");
+var { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
 var sem = require("semaphore")(1);
 //Локальные модули

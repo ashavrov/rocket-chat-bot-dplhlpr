@@ -23,21 +23,21 @@
     "local": "node -r dotenv/config node_modules/hubot/bin/hubot.js -a rocketchat"
   },
   "dependencies": {
-    "bluebird": "^3.5.5",
+    "bluebird": "^3.7.2",
     "chai": "^4.2.0",
-    "coffeescript": "^2.2.2",
-    "debug-mode": "^2.0.0",
-    "googleapis": "^27.0.0",
+    "coffeescript": "^2.5.1",
+    "debug-mode": "^2.0.2",
+    "googleapis": "^66.0.0",
     "hubot": "3",
     "hubot-rocketchat": "rocketchat/hubot-rocketchat",
-    "jenkins": "^0.27.0",
+    "jenkins": "^0.28.1",
     "semaphore": "^1.1.0",
-    "sqlite3": "^4.1.1",
+    "sqlite3": "^5.0.0",
     "xml-query": "^1.5.0",
     "xml-reader": "^2.4.3"
   },
   "devDependencies": {
-    "dotenv": "^5.0.1",
+    "dotenv": "^8.2.0",
     "hubot-test-helper": "^1.9.0"
   }
 }
