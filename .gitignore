@@ -66,3 +66,4 @@ test.bat
 msg\.db3
 credentials.json
 token.json
+yarn.lock
